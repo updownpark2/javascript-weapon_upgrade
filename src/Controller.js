@@ -18,13 +18,13 @@ class Controller {
   }
 
   #getAndShowUpgrade() {
-    const upgrade = this.#upgradeGame.getUpgrage();
+    const upgrade = this.#upgradeGame.getUpgrade();
     OutputView.showUpgrade(upgrade);
   }
   #getChallenge() {
     InputView.readChallengeCommand((challenge) => {
       if (this.#checkChallenge(challenge) !== false) {
-        console.log(challenge);
+        this.#challengeOrStop(challenge);
       }
     });
   }
@@ -35,6 +35,36 @@ class Controller {
     } catch (error) {
       this.#ValidationFailAndShowError(error);
       this.#getChallenge();
+
+      return false;
+    }
+  }
+
+  #challengeOrStop(challenge) {
+    if (this.#upgradeGame.isChallenge(challenge) === true) {
+      this.#getMiniGameInput();
+      return;
+    }
+    this.#getAndshowResult();
+  }
+
+  #getAndshowResult() {
+    const upgrade = this.#upgradeGame.getUpgrade();
+    OutputView.showResult(upgrade);
+  }
+
+  #getMiniGameInput() {
+    InputView.readMiniGameInput((miniGameInput) => {
+      this.#checkMinigameInput(miniGameInput);
+    });
+  }
+
+  #checkMinigameInput(miniGameInput) {
+    try {
+      this.#validation.checkMinigameInput(miniGameInput);
+    } catch (error) {
+      this.#ValidationFailAndShowError(error);
+      this.#getMiniGameInput();
 
       return false;
     }

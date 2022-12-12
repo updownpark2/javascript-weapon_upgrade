@@ -1,12 +1,12 @@
 class UpgradeGame {
   #upgrade = 0;
 
-  getUpgrage() {
+  getUpgrade() {
     return this.#upgrade;
   }
 
   isChallenge(challenge) {
-    if (challenge === "Y") {
+    if (challenge === `Y`) {
       return true;
     }
     return false;

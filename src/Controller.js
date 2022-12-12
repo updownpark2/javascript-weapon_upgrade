@@ -21,10 +21,12 @@ class Controller {
     const upgrade = this.#upgradeGame.getUpgrade();
     OutputView.showUpgrade(upgrade);
   }
+
   #getChallenge() {
     InputView.readChallengeCommand((challenge) => {
       if (this.#checkChallenge(challenge) !== false) {
         this.#challengeOrStop(challenge);
+        return;
       }
     });
   }
@@ -33,7 +35,7 @@ class Controller {
     try {
       this.#validation.checkChallenge(challenge);
     } catch (error) {
-      this.#ValidationFailAndShowError(error);
+      this.#validationFailAndShowError(error);
       this.#getChallenge();
 
       return false;
@@ -50,12 +52,14 @@ class Controller {
 
   #getAndshowResult() {
     const upgrade = this.#upgradeGame.getUpgrade();
-    OutputView.showResult(upgrade);
+    OutputView.showUpgrade(upgrade);
   }
 
   #getMiniGameInput() {
     InputView.readMiniGameInput((miniGameInput) => {
-      this.#checkMinigameInput(miniGameInput);
+      if (this.#checkMinigameInput(miniGameInput) !== false) {
+        this.#upgradeSuccessOrFail(miniGameInput);
+      }
     });
   }
 
@@ -63,15 +67,38 @@ class Controller {
     try {
       this.#validation.checkMinigameInput(miniGameInput);
     } catch (error) {
-      this.#ValidationFailAndShowError(error);
+      this.#validationFailAndShowError(error);
       this.#getMiniGameInput();
 
       return false;
     }
   }
 
-  #ValidationFailAndShowError(error) {
+  #validationFailAndShowError(error) {
     OutputView.showError(error);
+  }
+
+  #getResultOfUpgrade(miniGameInput) {
+    return this.#upgradeGame.isSuccess(miniGameInput);
+  }
+
+  #upgradeSuccess() {
+    this.#upgradeGame.successAndreset();
+    this.#getChallenge();
+  }
+  #upgradeFail() {
+    const upgradeCount = this.#upgradeGame.getUpgradeCount();
+    const upgradeProbability = this.#upgradeGame.getUpgradeProbability();
+    OutputView.showResultOfUpgradeCount(upgradeCount);
+    OutputView.showResultOfUpgrade("실패", upgradeProbability);
+  }
+
+  #upgradeSuccessOrFail(miniGameInput) {
+    if (this.#getResultOfUpgrade(miniGameInput) === true) {
+      this.#upgradeSuccess();
+      return;
+    }
+    this.#upgradeFail();
   }
 }
 

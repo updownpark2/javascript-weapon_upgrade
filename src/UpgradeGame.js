@@ -1,4 +1,5 @@
 const generateMiniGameNumber = require(`./generateMiniGameNumber`);
+const UpgradeUtils = require(`./UpgradeUtils`);
 
 class UpgradeGame {
   #upgradeCount = 0;
@@ -17,7 +18,7 @@ class UpgradeGame {
   }
 
   #isNumber(miniGameInput) {
-    const numArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const numArr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     if (numArr.includes(miniGameInput)) {
       return true;
     }
@@ -28,7 +29,7 @@ class UpgradeGame {
     }
   }
 
-  plusProbability(miniGameInput) {
+  #plusProbability(miniGameInput) {
     if (this.#isNumber(miniGameInput) === true) {
       this.#judgementNumber(miniGameInput);
     }
@@ -39,6 +40,8 @@ class UpgradeGame {
 
   #judgementNumber(miniGameInput) {
     const randomNum = generateMiniGameNumber();
+    console.log(randomNum);
+
     if (miniGameInput === randomNum) {
       this.#upgradeProbability = this.#upgradeProbability + 50;
     }
@@ -60,12 +63,33 @@ class UpgradeGame {
     return 0;
   }
 
+  isSuccess(miniGameInput) {
+    this.#plusProbability(miniGameInput);
+    return UpgradeUtils.isUpgraded(this.#upgradeProbability);
+  }
+
+  successAndreset() {
+    this.#upgradeCountUp();
+    this.#resetProbability();
+  }
+
   #upgradeCountUp() {
     this.#upgradeCount = this.#upgradeCount + 1;
   }
 
   #resetProbability() {
     this.#upgradeProbability = 90 - this.#upgradeCount * 10;
+  }
+
+  getUpgradeCount() {
+    return this.#upgradeCount;
+  }
+
+  getUpgradeProbability() {
+    if (this.#upgradeProbability >= 100) {
+      return 100;
+    }
+    return this.#upgradeProbability;
   }
 }
 

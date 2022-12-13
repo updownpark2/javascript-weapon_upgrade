@@ -10,7 +10,7 @@ const OutputView = {
   },
 
   showResultOfUpgradeCount(upgradeCount) {
-    Console.print(`최종 강화 결과: ${upgradeCount}`);
+    Console.print(`최종 강화 결과: ${upgradeCount}+`);
   },
 
   showResultOfUpgrade(successOrFail, probability) {

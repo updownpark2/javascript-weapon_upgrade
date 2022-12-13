@@ -79,18 +79,18 @@ class Controller {
   }
 
   #getResultOfUpgrade(miniGameInput) {
-    return this.#upgradeGame.isSuccess(miniGameInput);
+    return this.#upgradeGame.isSuccessUpgrade(miniGameInput);
   }
 
   #upgradeSuccess() {
-    this.#upgradeGame.successAndreset();
+    this.#upgradeGame.sucessAndReset();
     this.#getChallenge();
   }
   #upgradeFail() {
     const upgradeCount = this.#upgradeGame.getUpgradeCount();
-    const upgradeProbability = this.#upgradeGame.getUpgradeProbability();
+    const probability = this.#upgradeGame.getUpgradeProbability();
     OutputView.showResultOfUpgradeCount(upgradeCount);
-    OutputView.showResultOfUpgrade("실패", upgradeProbability);
+    OutputView.showResultOfUpgrade("실패", probability);
   }
 
   #upgradeSuccessOrFail(miniGameInput) {

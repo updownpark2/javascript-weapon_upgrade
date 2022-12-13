@@ -3,12 +3,12 @@ const UpgradeUtils = require(`./UpgradeUtils`);
 
 class UpgradeGame {
   #upgradeCount = 0;
-  #upgradeProbability = 80;
+  #upgradeProbability = [80, 70, 60, 50, 45, 40, 35, 30, 20, 10];
+  #probability = 0;
 
   getUpgrade() {
     return this.#upgradeCount;
   }
-  upgradePro;
 
   isChallenge(challenge) {
     if (challenge === `Y`) {
@@ -40,11 +40,12 @@ class UpgradeGame {
 
   #judgementNumber(miniGameInput) {
     const randomNum = generateMiniGameNumber();
-    console.log(randomNum);
 
     if (miniGameInput === randomNum) {
-      this.#upgradeProbability = this.#upgradeProbability + 50;
+      this.#probability = this.#upgradeProbability[this.#upgradeCount] + 50;
+      return;
     }
+    this.#probability = this.#upgradeProbability[this.#upgradeCount];
   }
 
   #judgementOddEven(miniGameInput) {
@@ -52,8 +53,10 @@ class UpgradeGame {
     const miniGameInputNum = this.#translateToNum(miniGameInput);
 
     if (randomOddEvenNum === miniGameInputNum) {
-      this.#upgradeProbability = this.#upgradeProbability + 10;
+      this.#probability = this.#upgradeProbability[this.#upgradeCount] + 10;
+      return;
     }
+    this.#probability = this.#upgradeProbability[this.#upgradeCount];
   }
 
   #translateToNum(miniGameInput) {
@@ -63,14 +66,10 @@ class UpgradeGame {
     return 0;
   }
 
-  isSuccess(miniGameInput) {
+  isSuccessUpgrade(miniGameInput) {
     this.#plusProbability(miniGameInput);
-    return UpgradeUtils.isUpgraded(this.#upgradeProbability);
-  }
-
-  successAndreset() {
-    this.#upgradeCountUp();
-    this.#resetProbability();
+    const probability = this.#probability;
+    return UpgradeUtils.isUpgraded(probability);
   }
 
   #upgradeCountUp() {
@@ -78,7 +77,12 @@ class UpgradeGame {
   }
 
   #resetProbability() {
-    this.#upgradeProbability = 90 - this.#upgradeCount * 10;
+    this.#probability = 0;
+  }
+
+  sucessAndReset() {
+    this.#upgradeCountUp();
+    this.#resetProbability();
   }
 
   getUpgradeCount() {
@@ -86,10 +90,10 @@ class UpgradeGame {
   }
 
   getUpgradeProbability() {
-    if (this.#upgradeProbability >= 100) {
+    if (this.#probability >= 100) {
       return 100;
     }
-    return this.#upgradeProbability;
+    return this.#probability;
   }
 }
 
